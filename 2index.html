@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>For You ♡</title>
+
+<style>
+
+/* ---------- GENERAL ---------- */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background:
+        radial-gradient(circle at center,
+        #fff 0%,
+        #fff4f8 45%,
+        #f4dce7 100%);
+
+    font-family: Georgia, serif;
+    color: #543b47;
+
+    overflow: hidden;
+}
+
+
+/* ---------- MAIN SCENE ---------- */
+
+.scene {
+    height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+}
+
+
+/* ---------- FLOWERS ---------- */
+
+.flower {
+    position: absolute;
+
+    font-size: 70px;
+
+    transition:
+        all 2.5s cubic-bezier(.22,.61,.36,1);
+
+    filter: drop-shadow(
+        0 8px 12px rgba(120,70,90,.15)
+    );
+}
+
+
+/* starting positions */
+
+.flower1 {
+    left: 8%;
+    top: 25%;
+}
+
+.flower2 {
+    right: 8%;
+    top: 25%;
+}
+
+.flower3 {
+    left: 12%;
+    bottom: 22%;
+}
+
+.flower4 {
+    right: 12%;
+    bottom: 22%;
+}
+
+
+/* flowers move toward center */
+
+.scene.closing .flower1 {
+    left: calc(50% - 145px);
+    top: calc(50% - 120px);
+}
+
+.scene.closing .flower2 {
+    right: calc(50% - 145px);
+    top: calc(50% - 120px);
+}
+
+.scene.closing .flower3 {
+    left: calc(50% - 125px);
+    bottom: calc(50% - 125px);
+}
+
+.scene.closing .flower4 {
+    right: calc(50% - 125px);
+    bottom: calc(50% - 125px);
+}
+
+
+/* ---------- ENVELOPE ---------- */
+
+.envelope {
+    position: absolute;
+
+    width: 190px;
+    height: 125px;
+
+    background: #f5cbd9;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 18px 40px rgba(120,60,90,.25);
+
+    opacity: 0;
+
+    transform:
+        translateY(80px)
+        scale(.3);
+
+    transition:
+        opacity 1s ease,
+        transform 1.4s cubic-bezier(.17,.67,.25,1.2);
+
+    z-index: 5;
+
+    cursor: pointer;
+}
+
+
+/* envelope appears */
+
+.envelope.show {
+    opacity: 1;
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/* envelope zooms closer */
+
+.envelope.zoom {
+    transform: scale(1.15);
+}
+
+
+/* envelope flap */
+
+.flap {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 0;
+    height: 0;
+
+    border-left: 95px solid transparent;
+    border-right: 95px solid transparent;
+    border-top: 65px solid #e7afc3;
+
+    transform-origin: top;
+
+    transition: transform .8s ease;
+
+    z-index: 3;
+}
+
+
+/* inside paper */
+
+.paper {
+    position: absolute;
+
+    left: 20px;
+    bottom: 12px;
+
+    width: 150px;
+    height: 95px;
+
+    background: white;
+
+    border-radius: 5px;
+
+    z-index: 1;
+
+    transition:
+        transform 1s ease,
+        bottom 1s ease;
+}
+
+
+/* heart seal */
+
+.seal {
+    position: absolute;
+
+    left: 50%;
+    top: 52%;
+
+    transform: translate(-50%, -50%);
+
+    font-size: 30px;
+
+    z-index: 4;
+
+    transition: opacity .5s;
+}
+
+
+/* ---------- OPEN ENVELOPE ---------- */
+
+.envelope.open .flap {
+    transform: rotateX(180deg);
+}
+
+.envelope.open .paper {
+    transform: translateY(-95px);
+    bottom: 25px;
+}
+
+.envelope.open .seal {
+    opacity: 0;
+}
+
+
+/* ---------- QUESTION ---------- */
+
+.question {
+
+    position: absolute;
+
+    bottom: 11%;
+
+    text-align: center;
+
+    opacity: 0;
+
+    transform: translateY(20px);
+
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+
+    z-index: 10;
+}
+
+.question.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.question h2 {
+    font-weight: normal;
+
+    font-size: 22px;
+
+    margin-bottom: 18px;
+}
+
+
+/* buttons */
+
+button {
+
+    border: none;
+
+    padding: 12px 22px;
+
+    border-radius: 30px;
+
+    margin: 5px;
+
+    font-size: 15px;
+
+    cursor: pointer;
+}
+
+.openBtn {
+    background: #bd6d8e;
+    color: white;
+}
+
+.notBtn {
+    background: #f1dce5;
+    color: #80566a;
+}
+
+
+/* ---------- LETTER ---------- */
+
+.letter {
+
+    position: absolute;
+
+    width: min(90%, 520px);
+
+    max-height: 75vh;
+
+    overflow-y: auto;
+
+    padding: 30px;
+
+    background: rgba(255,255,255,.96);
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 25px 80px rgba(90,50,70,.25);
+
+    opacity: 0;
+
+    transform:
+        scale(.7)
+        translateY(30px);
+
+    pointer-events: none;
+
+    transition:
+        opacity 1s ease,
+        transform 1s ease;
+
+    z-index: 20;
+
+    line-height: 1.8;
+
+    text-align: left;
+}
+
+.letter.visible {
+
+    opacity: 1;
+
+    transform:
+        scale(1)
+        translateY(0);
+
+    pointer-events: auto;
+}
+
+.letter h2 {
+    text-align: center;
+
+    font-weight: normal;
+}
+
+.letter p {
+    margin-bottom: 18px;
+}
+
+.signature {
+    text-align: right;
+
+    color: #a65c7c;
+}
+
+
+/* ---------- NOT YET MESSAGE ---------- */
+
+.notYet {
+
+    position: absolute;
+
+    text-align: center;
+
+    opacity: 0;
+
+    transform: translateY(20px);
+
+    transition: 1s ease;
+
+    z-index: 15;
+}
+
+.notYet.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.notYet p {
+    font-size: 18px;
+}
+
+.notYet button {
+    background: #bd6d8e;
+    color: white;
+}
+
+
+/* ---------- FLOATING PETALS ---------- */
+
+.petal {
+
+    position: fixed;
+
+    top: -20px;
+
+    font-size: 20px;
+
+    animation: fall linear forwards;
+
+    pointer-events: none;
+}
+
+@keyframes fall {
+
+    to {
+        transform:
+            translateY(110vh)
+            rotate(360deg);
+
+        opacity: 0;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="scene" id="scene">
+
+
+    <!-- FLOWERS -->
+
+    <div class="flower flower1">🌷</div>
+
+    <div class="flower flower2">🌸</div>
+
+    <div class="flower flower3">🌹</div>
+
+    <div class="flower flower4">🌼</div>
+
+
+    <!-- ENVELOPE -->
+
+    <div
+        class="envelope"
+        id="envelope"
+    >
+
+        <div class="flap"></div>
+
+        <div class="paper"></div>
+
+        <div class="seal">
+            ♡
+        </div>
+
+    </div>
+
+
+    <!-- QUESTION -->
+
+    <div
+        class="question"
+        id="question"
+    >
+
+        <h2>
+            I made something for you. ♡
+        </h2>
+
+        <button
+            class="openBtn"
+            id="openButton"
+        >
+            Open it
+        </button>
+
+        <button
+            class="notBtn"
+            id="notButton"
+        >
+            Not yet
+        </button>
+
+    </div>
+
+
+    <!-- NOT YET -->
+
+    <div
+        class="notYet"
+        id="notYet"
+    >
+
+        <p>
+            That's okay. Take your time. ♡
+        </p>
+
+        <button id="openAnyway">
+            Okay, I'll open it
+        </button>
+
+    </div>
+
+
+    <!-- LETTER -->
+
+    <div
+        class="letter"
+        id="letter"
+    >
+
+    <h2>
+        dear misis ko,
+    </h2>
+
+    <p>
+        i made this for you para extra special hehe..
+    </p>
+
+    <p>
+        i just wanted to let you know how much i love you. and i am sorry if this is gonna be my last letter for you.
+    </p>
+
+    <p>
+        yung pagdating mo sa buhay ko yung isa sa mga magandang nangyari sa buhay ko. i thank God everyday kasi binigay ka nya sa akin. naging better person ako dahil sa’yo. you brought out the best in me kaya im forever thankful sayo.
+    </p>
+
+    <p>
+        minsan hindi ko gets bakit ako natipuhan mo eh haha.. up until this day hindi ko lubusang maunawaan kung bakit ako ang napili mo. hindi sa ayaw ko sayo, kundi sa reyalidad na mahirap akong mahalin. mahirap mahalin ang isang taong tulad ko na magulo lagi ang utak, weird, at marami pang iba haha. hindi ako kamahal mahal dahil sa personality ko. maraming reason para umalis ka pero you still stayed. hindi ko nga alam if hanggang kailan mo kayang tiisin ang ugali ko.
+    </p>
+
+    <p>
+        sorry if lagi akong parang nagtatampo or nawawalan ng gana. hindi naman yon sa ayaw kitang kausap, sadyang mabigat lang para sakin. hindi ko ma translate into words ng ayos mga nararamdaman ko, natatakot ako na baka magalit ka kapag nagsabi ako sayo. nago-overthink po ako and i’m sorry for that. hindi ko kasi ma control yung nararamdaman ko, kung pwede nga lang talaga eh.
+    </p>
+
+    <p>
+        sorry din if nalagay kita sa situation na ito, to the point na u started blaming yourself. ang totoo nyan, wala ka namang kasalanan. kasalanan ko lahat kasi lagi akong puno ng expectations. kaya sa huli nad-disappoint lang ako then magtatampo. hindi mo rin kasalanan na parang kulang yung reassurance na binibigay mo sakin, baka ako lang talaga ang ayaw maniwala.
+    </p>
+
+    <p>
+        please don’t blame yourself sa mga nangyari sa atin, it wasn’t entirely your fault. something in me broke that night nung nag away at nagkasagutan tayo ng malala. i’m not hurt that much anymore and i don’t care as much as before. parang natauhan ba haha.
+    </p>
+
+    <p>
+        inaamin ko baby, tuwing sweet moments natin ngayon, parang naiiyak at nalulungkot lang ako eh. kasi alam ko sa isang araw wala na po ulit to.
+    </p>
+
+    <p>
+        i miss the soft version of us:)
+    </p>
+
+    <p>
+        im forever grateful for you
+    </p>
+
+    <p>
+        always rooting for you
+    </p>
+
+    <p>
+        best of luck sa college!!
+    </p>
+
+    <p>
+        may we reach our goals and dreams
+    </p>
+
+    <p class="signature">
+        with love
+               -vien
+    </p>
+     
+     
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+const scene =
+document.getElementById("scene");
+
+const envelope =
+document.getElementById("envelope");
+
+const question =
+document.getElementById("question");
+
+const letter =
+document.getElementById("letter");
+
+const notYet =
+document.getElementById("notYet");
+
+const openButton =
+document.getElementById("openButton");
+
+const notButton =
+document.getElementById("notButton");
+
+const openAnyway =
+document.getElementById("openAnyway");
+
+
+
+/* flowers move together */
+
+setTimeout(() => {
+
+    scene.classList.add("closing");
+
+}, 1000);
+
+
+
+/* envelope appears */
+
+setTimeout(() => {
+
+    envelope.classList.add("show");
+
+}, 3200);
+
+
+
+/* envelope zooms */
+
+setTimeout(() => {
+
+    envelope.classList.add("zoom");
+
+}, 4400);
+
+
+
+/* question appears */
+
+setTimeout(() => {
+
+    question.classList.add("show");
+
+}, 5000);
+
+
+
+/* OPEN */
+
+openButton.addEventListener(
+    "click",
+    () => {
+
+        envelope.classList.add("open");
+
+        question.classList.remove("show");
+
+        setTimeout(() => {
+
+            letter.classList.add("visible");
+
+            makePetals();
+
+        }, 900);
+
+    }
+);
+
+
+
+/* NOT YET */
+
+notButton.addEventListener(
+    "click",
+    () => {
+
+        question.classList.remove("show");
+
+        notYet.classList.add("show");
+
+    }
+);
+
+
+
+/* OPEN ANYWAY */
+
+openAnyway.addEventListener(
+    "click",
+    () => {
+
+        notYet.classList.remove("show");
+
+        envelope.classList.add("open");
+
+        setTimeout(() => {
+
+            letter.classList.add("visible");
+
+            makePetals();
+
+        }, 900);
+
+    }
+);
+
+
+
+/* petals */
+
+function makePetals() {
+
+    for (
+        let i = 0;
+        i < 20;
+        i++
+    ) {
+
+        setTimeout(() => {
+
+            const petal =
+            document.createElement("div");
+
+            petal.className = "petal";
+
+            petal.innerHTML = "🌸";
+
+            petal.style.left =
+                Math.random() * 100 + "vw";
+
+            petal.style.animationDuration =
+                (5 + Math.random() * 5) + "s";
+
+            document.body.appendChild(petal);
+
+            setTimeout(() => {
+
+                petal.remove();
+
+            }, 10000);
+
+        }, i * 180);
+
+    }
+
+}
+
+
+</script>
+
+</body>
+</html>
